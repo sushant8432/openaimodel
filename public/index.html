@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vantage Hall Chatbot - AI Powered</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Chat Toggle Button */
+        .chat-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 9999;
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .chat-toggle svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+        }
+
+        .chat-toggle.active {
+            background: #e74c3c;
+        }
+
+        .chat-icon, .close-icon {
+            transition: opacity 0.2s ease;
+        }
+
+        .close-icon {
+            display: none;
+        }
+
+        .chat-toggle.active .chat-icon {
+            display: none;
+        }
+
+        .chat-toggle.active .close-icon {
+            display: block;
+        }
+
+        /* Chat Bubble */
+        .chat-bubble {
+            position: fixed;
+            bottom: 95px;
+            right: 20px;
+            background: linear-gradient(135deg, #1206f9 0%, #58f9e9 100%);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 20px;
+            border-bottom-right-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 9998;
+            animation: bubbleBounce 2s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 250px;
+        }
+
+        .chat-bubble.hidden {
+            display: none;
+        }
+
+        @keyframes bubbleBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .wave-emoji {
+            display: inline-block;
+            animation: wave 1s ease-in-out infinite;
+            font-size: 18px;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(20deg); }
+            75% { transform: rotate(-20deg); }
+        }
+
+        /* Notification Badge */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #7763de;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            border: 3px solid white;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Chat Container */
+        .chat-container {
+            position: fixed;
+            bottom: 95px;
+            right: 20px;
+            width: 380px;
+            height: 550px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 9999;
+            animation: slideUp 0.3s ease;
+        }
+
+        .chat-container.active {
+            display: flex;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #2b00ff 0%, #ffffff57 100%);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .chat-header-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .chat-header-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .chat-header-info {
+            flex: 1;
+        }
+
+        .chat-header-info h3 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .chat-header-info p {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+
+        .ai-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 9px;
+            font-weight: bold;
+            margin-top: 2px;
+            display: inline-block;
+        }
+
+        /* Registration Form Overlay */
+        .registration-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .registration-overlay.hidden {
+            display: none;
+        }
+
+        .registration-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .registration-header h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .registration-header p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .registration-form {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group label .required {
+            color: #e74c3c;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input.error {
+            border-color: #e74c3c;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .form-note {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-top: 15px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid white;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Chat Messages */
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 13px;
+            line-height: 1.5;
+            word-wrap: break-word;
+        }
+
+        .message.bot .message-content {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .quick-replies {
+            padding: 10px 16px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            flex-shrink: 0;
+            max-height: 85px;
+        }
+
+        .quick-replies::-webkit-scrollbar {
+            height: 0;
+        }
+
+        .quick-reply-btn {
+            padding: 7px 12px;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 18px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .quick-reply-btn:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+        }
+
+        .chat-input {
+            padding: 12px 16px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 22px;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .chat-input input:focus {
+            border-color: #667eea;
+        }
+
+        .chat-input input:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        .chat-input button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .chat-input button:hover:not(:disabled) {
+            transform: scale(1.05);
+        }
+
+        .chat-input button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .chat-input button svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 10px 14px;
+            background: white;
+            border-radius: 16px;
+            border-bottom-left-radius: 4px;
+            max-width: 70px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background: #999;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+            margin-right: 0;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-8px); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .chat-container {
+                bottom: 0;
+                right: 0;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
+                max-height: 100vh;
+            }
+
+            .chat-bubble {
+                bottom: 90px;
+                right: 15px;
+                max-width: 200px;
+                font-size: 13px;
+                padding: 10px 14px;
+            }
+
+            .chat-toggle {
+                bottom: 15px;
+                right: 15px;
+                width: 56px;
+                height: 56px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Chat Bubble -->
+    <div class="chat-bubble" id="chatBubble">
+        <span class="wave-emoji">👋</span>
+        AI Assistant Here! Ask me anything!
+    </div>
+
+    <!-- Chat Toggle Button -->
+    <button class="chat-toggle" id="chatToggle">
+        <span class="notification-badge">1</span>
+        <svg viewBox="0 0 24 24" class="chat-icon">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+        </svg>
+        <svg viewBox="0 0 24 24" class="close-icon">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+    </button>
+
+    <!-- Chat Container -->
+    <div class="chat-container" id="chatContainer">
+        <!-- Registration Form Overlay -->
+        <div class="registration-overlay" id="registrationOverlay">
+            <div class="registration-header">
+                <h2>👋 Welcome to Vantage Hall!</h2>
+                <p>Please share your details to start chatting</p>
+            </div>
+            <div class="registration-form">
+                <form id="userDetailsForm">
+                    <div class="form-group">
+                        <label for="userName">Your Name <span class="required">*</span></label>
+                        <input type="text" id="userName" placeholder="Enter your full name" required>
+                        <div class="error-message" id="nameError">Please enter your name</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="userEmail">Email Address <span class="required">*</span></label>
+                        <input type="email" id="userEmail" placeholder="example@email.com" required>
+                        <div class="error-message" id="emailError">Please enter a valid email</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="userPhone">Phone Number <span class="required">*</span></label>
+                        <input type="tel" id="userPhone" placeholder="10-digit mobile number" required maxlength="10">
+                        <div class="error-message" id="phoneError">Please enter a valid 10-digit number</div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        Start Chatting 🚀
+                    </button>
+
+                    <div class="form-note">
+                        🔒 Your information is secure and will only be used to provide better assistance.
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <div class="chat-header-avatar">
+                <img src="https://tse4.mm.bing.net/th/id/OIP.ObhPteB_2loAm-xq-0Sw9AHaHa?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3" 
+                     alt="Vantage Hall Logo">
+            </div>
+            <div class="chat-header-info">
+                <h3>Vantage Hall AI Assistant</h3>
+                <p>Online • Powered by AI</p>
+                <span class="ai-badge">🤖 AI-POWERED</span>
+            </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="typing-indicator" id="typingIndicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Replies -->
+        <div class="quick-replies" id="quickReplies">
+            <button class="quick-reply-btn" data-reply="What is the admission process?">📝 Admissions</button>
+            <button class="quick-reply-btn" data-reply="Tell me about fee structure">💰 Fee Structure</button>
+            <button class="quick-reply-btn" data-reply="What are hostel facilities?">🏡 Hostel</button>
+            <button class="quick-reply-btn" data-reply="How can I contact you?">📞 Contact</button>
+            <button class="quick-reply-btn" data-reply="What sports are available?">⚽ Sports</button>
+            <button class="quick-reply-btn" data-reply="Tell me about curriculum">📚 Curriculum</button>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Type your message..." disabled>
+            <button id="sendBtn" disabled>
+                <svg viewBox="0 0 24 24">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ==============================================
+        // CONFIGURATION - UPDATED WITH YOUR BACKEND URL
+        // ==============================================
+        const API_URL = "http://localhost:8000/api/chat";       // ✅ Changed to 8000
+const REGISTER_URL = "http://localhost:8000/api/register"; // ✅ Changed to 8000
+
+        // ==============================================
+        // DOM ELEMENTS
+        // ==============================================
+        const chatToggle = document.getElementById('chatToggle');
+        const chatContainer = document.getElementById('chatContainer');
+        const chatBubble = document.getElementById('chatBubble');
+        const chatMessages = document.getElementById('chatMessages');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const quickReplies = document.getElementById('quickReplies');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const registrationOverlay = document.getElementById('registrationOverlay');
+        const userDetailsForm = document.getElementById('userDetailsForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Form inputs
+        const userName = document.getElementById('userName');
+        const userEmail = document.getElementById('userEmail');
+        const userPhone = document.getElementById('userPhone');
+
+        // ==============================================
+        // STATE MANAGEMENT
+        // ==============================================
+        let isProcessing = false;
+        let isRegistered = false;
+        let userData = {};
+
+        // Check if user is already registered
+        if (localStorage.getItem('vhUserRegistered')) {
+            isRegistered = true;
+            userData = JSON.parse(localStorage.getItem('vhUserData'));
+        }
+
+        // ==============================================
+        // TOGGLE CHAT
+        // ==============================================
+        chatToggle.addEventListener('click', () => {
+            chatContainer.classList.toggle('active');
+            chatToggle.classList.toggle('active');
+            
+            if (chatContainer.classList.contains('active')) {
+                chatBubble.classList.add('hidden');
+                hideBadge();
+                
+                if (isRegistered) {
+                    registrationOverlay.classList.add('hidden');
+                    userInput.focus();
+                    
+                    // Show welcome message if first time
+                    if (!localStorage.getItem('vhWelcomeShown')) {
+                        setTimeout(() => {
+                            addMessage(`Hello ${userData.name}! 👋 Welcome to Vantage Hall Girls' Residential School, Dehradun! I'm your AI assistant and I can help you with information about admissions, facilities, curriculum, fees, and much more. How can I assist you today?`, 'bot');
+                            localStorage.setItem('vhWelcomeShown', 'true');
+                        }, 300);
+                    }
+                } else {
+                    registrationOverlay.classList.remove('hidden');
+                    userName.focus();
+                }
+            } else {
+                chatBubble.classList.remove('hidden');
+            }
+        });
+
+        // ==============================================
+        // FORM VALIDATION
+        // ==============================================
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function validatePhone(phone) {
+            return /^[6-9]\d{9}$/.test(phone);
+        }
+
+        // ==============================================
+        // HANDLE REGISTRATION FORM SUBMIT
+        // ==============================================
+        userDetailsForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Clear previous errors
+            document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
+            document.querySelectorAll('input').forEach(el => el.classList.remove('error'));
+            
+            // Get values
+            const name = userName.value.trim();
+            const email = userEmail.value.trim();
+            const phone = userPhone.value.trim();
+            
+            // Validate
+            let hasError = false;
+            
+            if (!name) {
+                userName.classList.add('error');
+                document.getElementById('nameError').classList.add('show');
+                hasError = true;
+            }
+            
+            if (!email || !validateEmail(email)) {
+                userEmail.classList.add('error');
+                document.getElementById('emailError').classList.add('show');
+                document.getElementById('emailError').textContent = !email ? 'Please enter your email' : 'Please enter a valid email';
+                hasError = true;
+            }
+            
+            if (!phone || !validatePhone(phone)) {
+                userPhone.classList.add('error');
+                document.getElementById('phoneError').classList.add('show');
+                document.getElementById('phoneError').textContent = !phone ? 'Please enter your phone number' : 'Please enter a valid 10-digit number';
+                hasError = true;
+            }
+            
+            if (hasError) return;
+            
+            // Show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading-spinner"></span>Processing...';
+            
+            try {
+                // Send to backend
+                const response = await fetch(REGISTER_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, email, phone })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Store user data
+                    userData = { name, email, phone };
+                    localStorage.setItem('vhUserRegistered', 'true');
+                    localStorage.setItem('vhUserData', JSON.stringify(userData));
+                    isRegistered = true;
+                    
+                    // Hide registration form
+                    registrationOverlay.classList.add('hidden');
+                    
+                    // Enable chat
+                    userInput.disabled = false;
+                    sendBtn.disabled = false;
+                    userInput.focus();
+                    
+                    // Show welcome message
+                    setTimeout(() => {
+                        addMessage(`Hello ${name}! 👋 Welcome to Vantage Hall Girls' Residential School, Dehradun! I'm your AI assistant and I can help you with information about admissions, facilities, curriculum, fees, and much more. How can I assist you today?`, 'bot');
+                        localStorage.setItem('vhWelcomeShown', 'true');
+                    }, 300);
+                    
+                } else {
+                    alert(data.error || 'Registration failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('Connection error. Please check your internet and try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Start Chatting 🚀';
+            }
+        });
+
+        // ==============================================
+        // PHONE NUMBER INPUT - ALLOW ONLY NUMBERS
+        // ==============================================
+        userPhone.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+        });
+
+        // ==============================================
+        // SEND MESSAGE FUNCTION
+        // ==============================================
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (message === '' || isProcessing) return;
+
+            // Add user message to UI
+            addMessage(message, 'user');
+            userInput.value = '';
+            
+            // Set processing state
+            isProcessing = true;
+            typingIndicator.style.display = 'block';
+            userInput.disabled = true;
+            sendBtn.disabled = true;
+            scrollToBottom();
+
+            try {
+                // Call AI API
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Hide typing indicator
+                typingIndicator.style.display = 'none';
+                
+                if (data.success && data.reply) {
+                    addMessage(data.reply, 'bot');
+                } else {
+                    throw new Error(data.error || 'Invalid response from server');
+                }
+            } catch (error) {
+                typingIndicator.style.display = 'none';
+                console.error('Error:', error);
+                
+                const errorMsg = error.message.includes('Failed to fetch') 
+                    ? 'Unable to connect to the server. Please check your internet connection and try again.'
+                    : 'Sorry, I encountered an error. Please try again.';
+                
+                addMessage(
+                    `${errorMsg}\n\nYou can also contact us directly:\n📞 0135-2776225\n📧 info@vantagehall.org\n📱 +91-8191912999`,
+                    'bot'
+                );
+            } finally {
+                isProcessing = false;
+                userInput.disabled = false;
+                sendBtn.disabled = false;
+                userInput.focus();
+            }
+        }
+
+        // ==============================================
+        // ADD MESSAGE TO CHAT
+        // ==============================================
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            const formattedText = text
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            contentDiv.innerHTML = formattedText;
+            
+            messageDiv.appendChild(contentDiv);
+            chatMessages.insertBefore(messageDiv, typingIndicator.parentElement);
+            scrollToBottom();
+        }
+
+        // ==============================================
+        // SCROLL TO BOTTOM
+        // ==============================================
+        function scrollToBottom() {
+            setTimeout(() => {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 100);
+        }
+
+        // ==============================================
+        // HIDE NOTIFICATION BADGE
+        // ==============================================
+        function hideBadge() {
+            setTimeout(() => {
+                const badge = document.querySelector('.notification-badge');
+                if (badge) badge.style.display = 'none';
+            }, 300);
+        }
+
+        // ==============================================
+        // EVENT LISTENERS
+        // ==============================================
+        
+        // Send button click
+        sendBtn.addEventListener('click', sendMessage);
+
+        // Enter key press
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Quick replies
+        quickReplies.addEventListener('click', (e) => {
+            if (e.target.classList.contains('quick-reply-btn')) {
+                const reply = e.target.getAttribute('data-reply');
+                userInput.value = reply;
+                sendMessage();
+            }
+        });
+
+        // Escape to close chat
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && chatContainer.classList.contains('active')) {
+                chatToggle.click();
+            }
+        });
+
+        // ==============================================
+        // WELCOME ANIMATION
+        // ==============================================
+        setTimeout(() => {
+            if (!localStorage.getItem('vhChatVisited')) {
+                chatBubble.style.animation = 'bubbleBounce 0.5s ease-in-out 3';
+                localStorage.setItem('vhChatVisited', 'true');
+            }
+        }, 1000);
+    </script>
+
+</body>
+</html>
