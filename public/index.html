@@ -687,9 +687,9 @@
 
     <script>
         // ==============================================
-        // CONFIGURATION - VERCEL DEPLOYED BACKEND
+        // CONFIGURATION - UPDATED WITH YOUR BACKEND URL
         // ==============================================
-        const API_URL = "https://openaimodel-vlom.vercel.app/api/chat";
+       const API_URL = "https://openaimodel-vlom.vercel.app/api/chat";
         const REGISTER_URL = "https://openaimodel-vlom.vercel.app/api/register";
 
         // ==============================================
@@ -930,4 +930,83 @@
         // ==============================================
         function addMessage(text, sender) {
             const messageDiv = document.createElement('div');
-            messageDiv.className = `message
+            messageDiv.className = `message ${sender}`;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            const formattedText = text
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            contentDiv.innerHTML = formattedText;
+            
+            messageDiv.appendChild(contentDiv);
+            chatMessages.insertBefore(messageDiv, typingIndicator.parentElement);
+            scrollToBottom();
+        }
+
+        // ==============================================
+        // SCROLL TO BOTTOM
+        // ==============================================
+        function scrollToBottom() {
+            setTimeout(() => {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 100);
+        }
+
+        // ==============================================
+        // HIDE NOTIFICATION BADGE
+        // ==============================================
+        function hideBadge() {
+            setTimeout(() => {
+                const badge = document.querySelector('.notification-badge');
+                if (badge) badge.style.display = 'none';
+            }, 300);
+        }
+
+        // ==============================================
+        // EVENT LISTENERS
+        // ==============================================
+        
+        // Send button click
+        sendBtn.addEventListener('click', sendMessage);
+
+        // Enter key press
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Quick replies
+        quickReplies.addEventListener('click', (e) => {
+            if (e.target.classList.contains('quick-reply-btn')) {
+                const reply = e.target.getAttribute('data-reply');
+                userInput.value = reply;
+                sendMessage();
+            }
+        });
+
+        // Escape to close chat
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && chatContainer.classList.contains('active')) {
+                chatToggle.click();
+            }
+        });
+
+        // ==============================================
+        // WELCOME ANIMATION
+        // ==============================================
+        setTimeout(() => {
+            if (!localStorage.getItem('vhChatVisited')) {
+                chatBubble.style.animation = 'bubbleBounce 0.5s ease-in-out 3';
+                localStorage.setItem('vhChatVisited', 'true');
+            }
+        }, 1000);
+    </script>
+
+</body>
+</html>
