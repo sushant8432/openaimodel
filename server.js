@@ -183,11 +183,12 @@ const KNOWLEDGE_BASE = {
     answer: "🎯 Career Guidance:\n\nWe offer counseling for Grades 8-12, including:\n\n✅ Medical (NEET)\n✅ Engineering (JEE)\n✅ Law (CLAT, AILET)\n✅ Management (IPM, NMIMS)\n✅ Design (NIFT, UCEED)\n✅ SAT & AP (foreign universities)\n\n1-on-1 guidance sessions available!"
   },
 
-  // Contact Information
+ // Contact Information
   contact: {
     keywords: ['contact', 'phone', 'email', 'address', 'reach', 'call', 'number'],
-    answer: "📍 Vantage Hall Girls' Residential School\nThe Yellow Brick Road, Doonga\nDehradun - 248007, Uttarakhand\n📞 General: 0135-2776225, 226, 227, 228\n📧 info@vantagehall.org\n\n👤 Admissions:\n📞 +91-8191912999, +91-7078311863\n📧 admissions@vantagehall.org\n🔗 Contact page: https://vantagehall.org/contact-us"
+    answer: "📍 Vantage Hall Girls' Residential School\nThe Yellow Brick Road, Doonga\nDehradun - 248007, Uttarakhand\n📞 General: <a href='tel:01352776225'>0135-2776225</a>, <a href='tel:01352776226'>226</a>, <a href='tel:01352776227'>227</a>, <a href='tel:01352776228'>228</a>\n📧 <a href='mailto:info@vantagehall.org'>info@vantagehall.org</a>\n\n👤 Admissions:\n📞 <a href='tel:+918191912999'>+91-8191912999</a>, <a href='tel:+917078311863'>+91-7078311863</a>\n📧 <a href='mailto:admissions@vantagehall.org'>admissions@vantagehall.org</a>\n🔗 Contact page: <a href='https://vantagehall.org/contact-us' target='_blank'>vantagehall.org/contact-us</a>"
   }
+  
 };
 
 // ==============================================
@@ -566,4 +567,5 @@ app.listen(PORT, () => {
   console.log(`📧 Email: ${EMAIL_CONFIG.auth.user ? 'Configured ✅' : 'Not Configured ❌'}`);
   console.log('╚═══════════════════════════════════════════\n');
   console.log('🚀 Ready to chat! Open index.html in your browser.\n');
+
 });
