@@ -81,10 +81,10 @@ const KNOWLEDGE_BASE = {
     answer: "📍 Vantage Hall is located in Doonga, Dehradun — about 10 km from the city centre. Easily accessible via Sahaspur Road & Rajpur Road.\n🗺 Google Maps: https://maps.app.goo.gl/F9okR4GADbhN9x5G8"
   },
 
-  // Faculty
+   // Faculty
   faculty: {
     keywords: ['faculty', 'teachers', 'staff', 'teaching quality', 'teacher qualification'],
-    answer: "👩‍🏫 All faculty members are highly qualified professionals with CBSE teaching certifications. Many hold postgraduate degrees and have years of teaching and mentoring experience."
+    answer: `‍🏫 All faculty members are highly qualified professionals with CBSE teaching certifications. Many hold postgraduate degrees and have years of teaching and mentoring experience.\n🔗 Learn more: <a href='https://vantagehall.org/facilities/' target='_blank'>vantagehall.org/facilities</a>`
   },
 
   // Smart Classes
@@ -569,3 +569,4 @@ app.listen(PORT, () => {
   console.log('🚀 Ready to chat! Open index.html in your browser.\n');
 
 });
+
