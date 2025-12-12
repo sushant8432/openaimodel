@@ -1,4 +1,4 @@
-// server.js - ENHANCED VERSION with OpenAI & User Details Collection & Email
+
 
 const fetch = require('node-fetch');
 const express = require('express');
@@ -37,6 +37,80 @@ const transporter = nodemailer.createTransport(EMAIL_CONFIG);
 // COMPREHENSIVE KNOWLEDGE BASE
 // ==============================================
 const KNOWLEDGE_BASE = {
+  // ==========================================
+  // EMOTIONAL SUPPORT & WELLBEING
+  // ==========================================
+  
+  visiting_policy: {
+    keywords: ['visit', 'visiting', 'can i visit', 'parent visit', 'meet daughter', 'see my daughter', 'visiting hours', 'when can i visit', 'visiting time'],
+    answer: "👨‍👩‍👧 Parent Visits:\n\nYes! Parents are warmly welcomed to visit their daughters whenever they wish. We strongly believe in maintaining close family connections.\n\n✅ Visit anytime you're in town\n✅ Preferably after school hours (to avoid disrupting academics)\n✅ No appointment needed - just come see your daughter!\n\nWe encourage regular interaction between parents and students. Your presence matters! 💙"
+  },
+
+  homesickness_emotional_support: {
+    keywords: ['homesick', 'homesickness', 'sad', 'emotional support', 'feeling sad', 'missing home', 'counselor', 'counselling', 'emotional care', 'mental health', 'feelings'],
+    answer: "💚 Emotional Support System:\n\nYes, we provide comprehensive emotional care:\n\n👩‍⚕️ Professional counselor on campus\n🏠 Caring dorm mothers\n👩‍🏫 Supportive teachers\n📞 Weekly video calls with parents (every Sunday)\n👭 Small, close-knit community\n🤝 Regular check-ins & bonding sessions\n\nEvery girl receives continuous emotional support to feel at home. Our nurturing environment ensures no student feels alone or unsupported."
+  },
+
+  hunger_between_meals: {
+    keywords: ['hungry', 'hunger', 'snack', 'between meals', 'food timing', 'meal schedule', 'feeling hungry', 'eat between', 'hungry at night'],
+    answer: "🍎 Meal Schedule & Snacks:\n\nNo child ever goes hungry! Our meal schedule:\n\n☀️ 8:00 AM - Breakfast\n🍪 11:00 AM - Morning Snack\n🍽️ 1:00 PM - Lunch\n🥤 6:00 PM - Evening Snack\n🍲 9:00 PM - Dinner\n🥛 Before Bed - Glass of Milk\n\n✅ Students can keep personal dry fruits or healthy snacks in dorms\n✅ Staff ensures every meal is nutritious and satisfying\n✅ No one goes hungry - ever!"
+  },
+
+  daily_routine: {
+    keywords: ['daily routine', 'schedule', 'timetable', 'day schedule', 'what does a day look like', 'typical day', 'daily schedule', 'routine'],
+    answer: "📅 Daily Routine:\n\nStudents follow a balanced routine:\n\n📚 Academics (structured class hours)\n⚽ Sports & Physical Activities\n🎨 Co-curricular Activities\n📖 Self-Study Time\n😌 Relaxation Periods\n\n🌅 Evenings: Outdoor play & recreation\n🎯 Weekends: Time for hobbies & recreation\n\nA perfect balance of learning, activity, and rest!"
+  },
+
+  safety_security_detailed: {
+    keywords: ['safe', 'secure', 'security system', 'campus security', '24x7 security', 'how safe', 'protection'],
+    answer: "🛡️ Safety & Security Measures:\n\n📹 24x7 CCTV surveillance across campus\n👮 Trained security personnel at all entry points\n🚪 Restricted entry with ID verification\n🏠 Round-the-clock dorm supervision\n🚨 Regular safety drills & emergency preparedness\n\nYour daughter's safety is our top priority. The campus is completely secure with multiple layers of protection."
+  },
+
+  bullying_policy: {
+    keywords: ['bully', 'bullying', 'bullied', 'unsafe', 'harassment', 'feel unsafe', 'teasing', 'ragging'],
+    answer: "🚫 Zero-Tolerance Bullying Policy:\n\nWe have a STRICT zero-tolerance policy against bullying in ANY form.\n\n✅ Students encouraged to speak openly with:\n   • Dorm mothers\n   • Counselors\n   • Teachers\n\n📮 Multiple reporting channels:\n   • Suggestion boxes\n   • Feedback mechanisms\n   • Regular meetings with leadership\n\n⚡ All concerns addressed:\n   • Promptly\n   • Confidentially\n   • With appropriate action\n\nEvery student feels safe, supported, and heard!"
+  },
+
+  parent_communication: {
+    keywords: ['speak to daughter', 'call daughter', 'talk to my daughter', 'phone call', 'video call', 'communication', 'contact daughter', 'emergency contact'],
+    answer: "📱 Parent-Student Communication:\n\n📞 Regular Calls:\n• Every Sunday: 1 hour device access for video/phone calls\n\n🚨 Emergency Communication:\n• Pastoral team ensures immediate contact\n• Front desk available 24/7\n• Parents informed instantly in emergencies\n\nWe ensure you stay connected with your daughter while maintaining a healthy balance with campus life."
+  },
+
+ medical_facilities: {
+  keywords: ['medical facility', 'doctor on campus', 'nurse', 'infirmary', 'sick', 'illness', 'health care', 'medical emergency', 'hospital'],
+  answer: "🏥 Medical Facilities:<br><br>✅ Fully equipped infirmary on campus with 24/7 medical assistance<br>👩‍⚕️ Qualified female doctor and trained nurses available<br>🚑 School ambulance for immediate evacuation<br>🏥 Tie-ups with nearby hospitals like Graphic Era, Synergy, and Max for emergencies<br>📞 Parents informed immediately in case of any medical situation<br><br>Your daughter’s health and safety are always a top priority. For complete details, visit: <a href='https://vantagehall.org/medical-services/' target='_blank'>Medical Services</a>"
+},
+
+  staff_training: {
+    keywords: ['staff trained', 'teacher training', 'pastoral care training', 'staff qualification', 'how staff trained', 'mentors', 'staff care'],
+    answer: "👩‍🏫 Staff Training & Pastoral Care:\n\nAll staff members receive specialized training in:\n\n📚 Pastoral care\n🧠 Child psychology\n💚 Emotional support techniques\n🤝 Mentoring skills\n\nOur staff act as mentors, ensuring every student feels:\n✅ Supported\n✅ Valued\n✅ Heard\n✅ Cared for\n\nYour daughter is in caring, professional hands!"
+  },
+
+  food_nutrition: {
+    keywords: ['food quality', 'nutrition', 'nutritious food', 'healthy food', 'what kind of food', 'meal quality', 'eating properly', 'meal supervision'],
+    answer: "🍽️ Food & Nutrition Care:\n\nMeals are:\n✅ Nutritious & diverse\n✅ Lovingly prepared\n✅ Curated by a professional nutritionist\n✅ Mix of Indian & Continental dishes\n\n👩‍🍳 Personal Care:\n• Motherly pastoral team supervises mealtimes\n• Ensures no one skips meals\n• Makes sure each student eats properly\n\nNutrition is more than just a menu - it's care and supervision that ensures every child eats well!"
+  },
+
+  academic_balance: {
+    keywords: ['balance academics', 'extracurricular balance', 'sports vs study', 'how balance', 'academics and sports', 'holistic development'],
+    answer: "⚖️ Academic & Extracurricular Balance:\n\nWe believe every child is unique with her own strengths and pace.\n\n📚 Structured timetable ensures:\n✅ Equal importance to academics, sports, arts & leadership\n✅ Flexibility for individual needs\n\n🏃‍♀️ Sports enthusiasts: Encouraged to pursue passions\n📖 Academic focused: Time & support for strong goals\n\nNo compromise on physical fitness or creative growth!\n\nIt's a balance that nurtures both intellect and individuality."
+  },
+
+  emergency_protocols: {
+    keywords: ['emergency procedure', 'emergency protocol', 'what if emergency', 'emergency handling', 'crisis management'],
+    answer: "🚨 Emergency Protocols:\n\nWell-defined safety and emergency procedures:\n\n✅ Trained staff & pastoral team\n✅ Every procedure handled with:\n   • Utmost care\n   • Calm approach\n   • Empathy\n\n📞 Parents informed immediately\n\nYour child's safety is your top priority - and it's ours too. We're prepared for every situation."
+  },
+
+  new_student_settling: {
+    keywords: ['new student', 'settling in', 'transition', 'adjustment', 'first day', 'orientation', 'buddy system', 'new admission'],
+    answer: "🎒 Helping New Students Settle:\n\nWe know transitioning to boarding life can be emotional.\n\n🤝 Support System:\n✅ Buddy pairing (every new student gets a buddy)\n✅ Personal mentor assigned\n✅ Caring dorm mother\n✅ Orientation sessions\n✅ Interactive activities\n✅ Community-building programs\n\n💚 Focus: Creating a warm, inclusive environment where every child feels:\n• At home\n• Understood\n• Cared for\n\nRight from day one!"
+  },
+
+  special_needs: {
+    keywords: ['special dietary', 'allergies', 'allergy', 'medical condition', 'special needs', 'dietary requirements', 'customized meal', 'food allergy', 'health condition'],
+    answer: "🏥 Special Dietary & Medical Needs:\n\nEvery child's well-being is personally attended to.\n\n✅ Parents share:\n   • Medical conditions\n   • Allergies\n   • Dietary preferences\n\n👩‍⚕️ With our:\n   • Infirmary team\n   • Kitchen team\n\n🍽️ Customized Care:\n• Meals tailored individually\n• Care plans personalized\n• Same attention as at home\n\nYour daughter receives exactly what she needs!"
+  },
+
   // Medical & Healthcare
   medical_team: {
     keywords: ['doctor', 'nurse', 'medical staff', 'physician', 'gynaecologist', 'school doctor'],
@@ -81,12 +155,12 @@ const KNOWLEDGE_BASE = {
     answer: "📍 Vantage Hall is located in Doonga, Dehradun — about 10 km from the city centre. Easily accessible via Sahaspur Road & Rajpur Road.\n🗺 Google Maps: https://maps.app.goo.gl/F9okR4GADbhN9x5G8"
   },
 
-   // Faculty
+  // Faculty
   faculty: {
     keywords: ['faculty', 'teachers', 'staff', 'teaching quality', 'teacher qualification'],
-    answer: `‍🏫 All faculty members are highly qualified professionals with CBSE teaching certifications. Many hold postgraduate degrees and have years of teaching and mentoring experience.\n🔗 Learn more: <a href='https://vantagehall.org/facilities/' target='_blank'>vantagehall.org/facilities</a>`
+    answer: `🏫 All faculty members are highly qualified professionals with CBSE teaching certifications. Many hold postgraduate degrees and have years of teaching and mentoring experience.\n🔗 Learn more: <a href='https://vantagehall.org/teachers-bio/' target='_blank'>vantagehall.org/teachers-bio</a>`
   },
-
+  
   // Smart Classes
   smart_class: {
     keywords: ['smart class', 'technology', 'digital classroom', 'computer lab', 'ERP', 'online learning'],
@@ -111,11 +185,11 @@ const KNOWLEDGE_BASE = {
     answer: "🎯 Our Vision & Mission:\n\nTo nurture happy, independent, and unique individuals in a safe and supportive environment."
   },
 
-  // Curriculum
-  curriculum: {
-    keywords: ['curriculum', 'board', 'cbse', 'syllabus', 'academics system', 'what subject', 'subjects taught'],
-    answer: "📚 We follow the CBSE curriculum\n\n🎓 Streams Offered (Classes 11-12):\n• Science\n• Commerce\n• Humanities\n\nOur curriculum emphasizes holistic development beyond textbooks."
-  },
+ // Curriculum
+curriculum: {
+  keywords: ['curriculum', 'board', 'cbse', 'syllabus', 'academics system', 'what subject', 'subjects taught'],
+  answer: "📚 We follow the CBSE curriculum with a well-balanced, student-centric academic programme that encourages holistic learning and critical thinking.<br><br>🎓 Streams Offered (Classes 11-12):<br>• Science<br>• Commerce<br>• Humanities<br><br>Our curriculum emphasizes holistic development beyond textbooks, including hands-on activities, critical thinking, and creative expression. For full information, visit: <a href='https://vantagehall.org/curriculum/' target='_blank'>Curriculum</a>"
+},
 
   // Timings
   timings: {
@@ -136,10 +210,11 @@ const KNOWLEDGE_BASE = {
   },
 
   // Admission Process
-  admission: {
-    keywords: ['admission', 'admit', 'process of admission', 'enroll', 'join', 'apply'],
-    answer: "📝 Admission Process:\n\n✅ Step 1: Written Test (English, Mathematics, Science)\n✅ Step 2: Interaction with Principal\n✅ Step 3: Interaction with Director\n\n📅 Registrations: September-October\n📅 Session Starts: April\n\n📞 Contact:\n+91-8191912999, +91-7078311863\n🔗 https://vantagehall.org/contact-us \n📧 admissions@vantagehall.org"
-  },
+admission: {
+  keywords: ['admission', 'admit', 'process of admission', 'enroll', 'join', 'apply'],
+  answer: "📝 Admission Process:<br><br>✅ Step 1: Written Test (English, Mathematics, Science)<br>✅ Step 2: Interaction with Principal<br>✅ Step 3: Interaction with Director<br><br>📅 Registrations: September-October<br>📅 Session Starts: April<br><br>📞 Contact:<br>+91-8191912999, +91-7078311863<br>📧 admissions@vantagehall.org<br>🔗 <a href='https://vantagehall.org/admission-procedure/' target='_blank'>Admission Procedure</a> for complete details"
+},
+
 
   // Documents Required
   documents: {
@@ -147,11 +222,12 @@ const KNOWLEDGE_BASE = {
     answer: "📄 Required Documents:\n\n• Birth Certificate & Aadhaar Card\n• Parents' Aadhaar & PAN Cards\n• Last examination mark sheet\n• Original Transfer Certificate\n• Medical Fitness Certificate\n• Student's PEN Number / APAAR ID"
   },
 
-  // Fee Structure
-  fee: {
-    keywords: ['fee', 'fees', 'cost', 'tuition', 'charge', 'payment', 'price'],
-    answer: "💰 Fee Structure:\n\n📌 Classes 3-7: ₹7,35,000 (Annual: ₹5,50,000 + One-time: ₹1,85,000)\n\n📌 Classes 8-10: ₹8,35,000 (Annual: ₹6,50,000 + One-time: ₹1,85,000)\n\n📌 Classes 11-12: ₹8,85,000 (Annual: ₹7,00,000 + One-time: ₹1,85,000)\n\n*One-time fees include registration, joining kit, imprest deposit & admission fee"
-  },
+ // Fee Structure
+fee: {
+  keywords: ['fee', 'fees', 'cost', 'tuition', 'charge', 'payment', 'price'],
+  answer: "💰 Fee Structure:<br><br>📌 Classes 3-7: ₹7,35,000 (Annual: ₹5,50,000 + One-time: ₹1,85,000)<br><br>📌 Classes 8-10: ₹8,35,000 (Annual: ₹6,50,000 + One-time: ₹1,85,000)<br><br>📌 Classes 11-12: ₹8,85,000 (Annual: ₹7,00,000 + One-time: ₹1,85,000)<br><br>*One-time fees include registration, joining kit, imprest deposit & admission fee.<br><br>For full details, visit: <a href='https://vantagehall.org/fee-structure/' target='_blank'>Fee Structure</a>"
+},
+
 
   // Hostel Facilities
   hostel: {
@@ -165,17 +241,19 @@ const KNOWLEDGE_BASE = {
     answer: "🍽️ Dining & Nutrition:\n\n✅ Nutritionist-planned meals\n✅ Special diets for athletes & medical needs\n✅ Veg & non-veg options\n✅ Menu rotates every 15 days\n\n🥗 Daily Meals:\n• Breakfast: Fruits, cereals, milk, eggs, bread/parathas\n• Lunch: Dal, rice/roti, vegetables, salad\n• Dinner: Similar to lunch with variety\n• Night Milk: Mandatory"
   },
 
-  // Sports
-  sports: {
-    keywords: ['sports', 'sport available', 'games', 'what sports', 'sports facilities', 'athletics', 'physical education', 'football', 'cricket', 'basketball', 'swimming', 'which sports'],
-    answer: "⚽ Sports & Athletics:\n\nTraining under qualified coaches in:\n\n🏃‍♀️ Football, Cricket, Basketball, Volleyball\n🎾 Squash, Badminton, Lawn Tennis, Table Tennis\n⛸️ Skating, Gymnasium, Swimming\n♟️ Indoor Games: Carrom, Chess"
-  },
+// Sports
+sports: {
+  keywords: ['sports', 'sport available', 'games', 'what sports', 'sports facilities', 'athletics', 'physical education', 'football', 'cricket', 'basketball', 'swimming', 'which sports'],
+  answer: "⚽ Sports & Athletics:<br><br>Training under qualified coaches in:<br><br>🏃‍♀️ Football, Self Defense, Basketball,<br>🎾 Squash, Badminton, Zumba Classes, Table Tennis<br>⛸️ Skating, Gymnasium, Swimming<br>♟️ Indoor Games: Chess<br><br>For full details, visit: <a href='https://vantagehall.org/sports-facilities/' target='_blank'>Sports Facilities</a>"
+},
+
 
   // Clubs & Activities
-  clubs: {
-    keywords: ['club', 'activity', 'extracurricular', 'societies', 'hobby'],
-    answer: "🎨 Clubs & Societies:\n\n• Art Club\n• Culinary Club\n• Dance & Music Club\n• Theatre Club\n• Finance & Maths Club\n• IT Club\n• Science Club\n• Photography Club\n• Sustainability Club\n• Editorial Board"
-  },
+clubs: {
+  keywords: ['club', 'activity', 'extracurricular', 'societies', 'hobby'],
+  answer: "🎨 Clubs & Societies:<br><br>• Art Club<br>• Culinary Club<br>• Dance & Music Club<br>• Theatre Club<br>• Finance & Maths Club<br>• IT Club<br>• Science Club<br>• Photography Club<br>• Sustainability Club<br>• Editorial Board<br><br>Explore more activities at: <a href='https://vantagehall.org/clubs/' target='_blank'>Clubs & Activities</a>"
+},
+
 
   // Career Guidance
   career: {
@@ -183,20 +261,235 @@ const KNOWLEDGE_BASE = {
     answer: "🎯 Career Guidance:\n\nWe offer counseling for Grades 8-12, including:\n\n✅ Medical (NEET)\n✅ Engineering (JEE)\n✅ Law (CLAT, AILET)\n✅ Management (IPM, NMIMS)\n✅ Design (NIFT, UCEED)\n✅ SAT & AP (foreign universities)\n\n1-on-1 guidance sessions available!"
   },
 
- // Contact Information
+  // Contact Information
   contact: {
     keywords: ['contact', 'phone', 'email', 'address', 'reach', 'call', 'number'],
     answer: "📍 Vantage Hall Girls' Residential School\nThe Yellow Brick Road, Doonga\nDehradun - 248007, Uttarakhand\n📞 General: <a href='tel:01352776225'>0135-2776225</a>, <a href='tel:01352776226'>226</a>, <a href='tel:01352776227'>227</a>, <a href='tel:01352776228'>228</a>\n📧 <a href='mailto:info@vantagehall.org'>info@vantagehall.org</a>\n\n👤 Admissions:\n📞 <a href='tel:+918191912999'>+91-8191912999</a>, <a href='tel:+917078311863'>+91-7078311863</a>\n📧 <a href='mailto:admissions@vantagehall.org'>admissions@vantagehall.org</a>\n🔗 Contact page: <a href='https://vantagehall.org/contact-us' target='_blank'>vantagehall.org/contact-us</a>"
+  },
+
+  // ==========================================
+  // IT & GADGETS POLICY SECTION (with Interactive Options)
+  // ==========================================
+
+  // 1. Internet Use & Safety - Main Entry
+  internet_use_safety: {
+    keywords: ['internet', 'online', 'internet safety', 'online safety', 'web safety', 'internet use', 'browsing'],
+    answer: "Hi! Would you like to know how we keep students safe online?\n\nPlease choose an option:",
+    hasOptions: true,
+    options: [
+      {
+        id: 1,
+        label: "🛡️ Internet Safety",
+        trigger: ['1', 'internet safety', 'safety', 'safe online'],
+        response: "All online sessions at school are supervised. Students use the Internet only for learning, research, and projects.\n\nWould you like to know about monitoring or safe browsing?",
+        subOptions: [
+          {
+            id: 1,
+            label: "👀 How is browsing monitored?",
+            trigger: ['1', 'monitoring', 'monitored', 'track'],
+            response: "We keep an eye on all online activity to make sure students stay safe. There's no expectation of privacy on school devices or Wi-Fi because safety comes first.\n\nAnything else you'd like to ask?"
+          },
+          {
+            id: 2,
+            label: "🌐 What sites are restricted?",
+            trigger: ['2', 'restricted', 'blocked', 'banned sites'],
+            response: "Don't worry, harmful or inappropriate websites are automatically blocked. Students cannot access unsafe or unsuitable content.\n\nWant to know about downloading rules?",
+            subOptions: [
+              {
+                id: 1,
+                label: "📥 Downloading rules",
+                trigger: ['1', 'download', 'downloading rules'],
+                response: "Students can't download any non-approved apps or software. This helps protect devices and ensures learning stays the focus.\n\nAnything unsafe, unnecessary, or unrelated to academics isn't allowed - including games, movies, or unknown software."
+              },
+              {
+                id: 2,
+                label: "❌ Prohibited actions",
+                trigger: ['2', 'prohibited', 'not allowed'],
+                response: "Prohibited actions include:\n• Downloading games or entertainment apps\n• Installing unknown software\n• Accessing blocked websites\n• Sharing login credentials\n\nThese rules help maintain a safe learning environment!"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: 2,
+        label: "👀 Monitoring",
+        trigger: ['2', 'monitoring', 'track', 'supervise'],
+        response: "We keep an eye on all online activity to make sure students stay safe. There's no expectation of privacy on school devices or Wi-Fi because safety comes first.\n\nAll browsing is supervised and logged for student protection."
+      },
+      {
+        id: 3,
+        label: "🚫 Restricted Websites",
+        trigger: ['3', 'restricted', 'blocked websites', 'banned'],
+        response: "Don't worry, harmful or inappropriate websites are automatically blocked. Students cannot access unsafe or unsuitable content.\n\nContent filtering ensures a safe browsing environment!"
+      }
+    ]
+  },
+
+  // 2. Downloading & Permissions
+  downloading_permissions: {
+    keywords: ['download', 'install', 'app', 'software', 'permission', 'installing apps'],
+    answer: "Looking for information about installing apps or software?\n\nPlease choose an option:",
+    hasOptions: true,
+    options: [
+      {
+        id: 1,
+        label: "📥 Can students download apps?",
+        trigger: ['1', 'can download', 'download apps', 'install apps'],
+        response: "Students can't download any non-approved apps or software. This helps protect devices and ensures learning stays the focus."
+      },
+      {
+        id: 2,
+        label: "🛑 What is not allowed?",
+        trigger: ['2', 'not allowed', 'prohibited', 'banned'],
+        response: "Anything unsafe, unnecessary, or unrelated to academics isn't allowed - including games, movies, or unknown software.\n\nThis policy protects both students and school devices!"
+      }
+    ]
+  },
+
+  // 3. Gadget Use & Permissions
+  gadget_use: {
+    keywords: ['gadget', 'device', 'bring gadget', 'what gadgets', 'allowed gadgets', 'phone', 'laptop', 'tablet'],
+    answer: "Would you like to know what gadgets students can bring?\n\nPlease choose an option:",
+    hasOptions: true,
+    options: [
+      {
+        id: 1,
+        label: "📱 Mobile Phones",
+        trigger: ['1', 'mobile', 'phone', 'smartphone', 'cell phone'],
+        response: "Students can bring phones, but they must be submitted to the staff and are only given back during travel or approved events.\n\nThis ensures students stay focused on academics and campus activities!"
+      },
+      {
+        id: 2,
+        label: "💻 Laptops/Tablets",
+        trigger: ['2', 'laptop', 'tablet', 'computer', 'ipad'],
+        response: "Yes, students may bring learning devices, but they are issued only for academic work, research, and exam preparation and always with permission.\n\nDevices must be used responsibly for educational purposes only!"
+      },
+      {
+        id: 3,
+        label: "🎧 Gadgets Not Allowed",
+        trigger: ['3', 'not allowed', 'prohibited', 'banned gadgets'],
+        response: "Some gadgets like speakers, smartwatches, or wireless headphones are not permitted. If brought, they're taken into safe custody and not returned during the term.\n\nThey will be returned to parents at term-end only."
+      }
+    ]
+  },
+
+  // 4. Device Storage & Access
+  device_storage_access: {
+    keywords: ['device storage', 'where kept', 'device access', 'get device', 'when use device', 'device timing'],
+    answer: "Want to know how devices are stored or accessed?\n\nPlease choose an option:",
+    hasOptions: true,
+    options: [
+      {
+        id: 1,
+        label: "🗄️ Where are devices kept?",
+        trigger: ['1', 'where kept', 'storage', 'kept where'],
+        response: "Devices are stored safely with the house staff or admin team. Students are responsible for keeping their own devices in good condition.\n\nAll devices are kept in secure storage areas!"
+      },
+      {
+        id: 2,
+        label: "📝 How to get a device issued?",
+        trigger: ['2', 'get device', 'issue device', 'request device'],
+        response: "Devices are issued only for study purposes and only with proper permission from authorized staff. Students should request approvals in advance.\n\nProper authorization ensures responsible usage!"
+      },
+      {
+        id: 3,
+        label: "⏳ When can devices be used?",
+        trigger: ['3', 'when use', 'device timing', 'usage time'],
+        response: "Devices are used during approved times for academic work, research, or school activities. Not during free time, dorm hours, or without supervision.\n\nThis helps maintain a healthy balance between study and rest!"
+      }
+    ]
+  },
+
+  // 5. Misuse & Consequences
+  misuse_consequences: {
+    keywords: ['misuse', 'breaking rules', 'consequences', 'punishment', 'what happens', 'rule violation', 'disciplinary'],
+    answer: "Have questions about rules or consequences?\n\nPlease choose an option:",
+    hasOptions: true,
+    options: [
+      {
+        id: 1,
+        label: "⚠️ What counts as misuse?",
+        trigger: ['1', 'what is misuse', 'counts as misuse', 'misuse means'],
+        response: "Things like accessing unsafe sites, using gadgets without permission, downloading unapproved material, or misusing someone else's device all count as misuse.\n\nFollowing these rules keeps everyone safe!"
+      },
+      {
+        id: 2,
+        label: "🚨 What happens if rules are broken?",
+        trigger: ['2', 'consequences', 'punishment', 'what happens', 'broken rules'],
+        response: "Misuse can lead to withdrawal of gadget or Internet access, warnings, and further disciplinary action if needed. Safety and responsibility are priorities.\n\nWe believe in fair consequences that help students learn!"
+      }
+    ]
   }
-  
 };
 
 // ==============================================
-// SMART KEYWORD MATCHING FUNCTION
+// SMART KEYWORD MATCHING FUNCTION WITH OPTIONS SUPPORT
 // ==============================================
-function findBestMatch(userMessage) {
+function findBestMatch(userMessage, lastTopic = null, lastOptionLevel = null) {
   const msg = userMessage.toLowerCase().trim();
   
+  // If we're in an option flow (user previously selected a topic with options)
+  if (lastTopic && KNOWLEDGE_BASE[lastTopic]) {
+    const topicData = KNOWLEDGE_BASE[lastTopic];
+    
+    // Check if user is selecting an option
+    if (topicData.hasOptions) {
+      // Check main options
+      for (const option of topicData.options) {
+        for (const trigger of option.trigger) {
+          if (msg === trigger.toLowerCase() || msg.includes(trigger.toLowerCase())) {
+            // Check if this option has sub-options
+            if (option.subOptions) {
+              return {
+                answer: option.response,
+                topic: lastTopic,
+                hasOptions: true,
+                options: option.subOptions,
+                optionLevel: 'sub'
+              };
+            }
+            return {
+              answer: option.response,
+              topic: lastTopic,
+              hasOptions: false
+            };
+          }
+        }
+      }
+      
+      // If we're at sub-option level, check those too
+      if (lastOptionLevel === 'sub') {
+        for (const mainOption of topicData.options) {
+          if (mainOption.subOptions) {
+            for (const subOption of mainOption.subOptions) {
+              for (const trigger of subOption.trigger) {
+                if (msg === trigger.toLowerCase() || msg.includes(trigger.toLowerCase())) {
+                  // Check if sub-option has further sub-options
+                  if (subOption.subOptions) {
+                    return {
+                      answer: subOption.response,
+                      topic: lastTopic,
+                      hasOptions: true,
+                      options: subOption.subOptions,
+                      optionLevel: 'deep'
+                    };
+                  }
+                  return {
+                    answer: subOption.response,
+                    topic: lastTopic,
+                    hasOptions: false
+                  };
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // Regular keyword matching for initial queries
   let bestMatch = null;
   let highestScore = 0;
   
@@ -227,14 +520,16 @@ function findBestMatch(userMessage) {
         answer: data.answer,
         topic: topic,
         score: score,
-        matchedKeywords: matchedKeywords
+        matchedKeywords: matchedKeywords,
+        hasOptions: data.hasOptions || false,
+        options: data.options || null
       };
     }
   }
   
   if (bestMatch && bestMatch.score >= 10) {
     console.log(`✅ Best Match: ${bestMatch.topic} (Score: ${bestMatch.score})`);
-    return bestMatch.answer;
+    return bestMatch;
   }
   
   return null;
@@ -372,8 +667,9 @@ async function callOpenAI(prompt) {
 app.get('/', (req, res) => {
   res.json({
     status: '✅ Server Running',
-    message: 'Vantage Hall Chatbot API - Enhanced Version with User Registration',
+    message: 'Vantage Hall Chatbot API - Enhanced Version with IT & Gadgets Policy + Emotional Support',
     model: 'OpenAI GPT-4o-mini + Email Notifications',
+    knowledgeBaseTopics: Object.keys(KNOWLEDGE_BASE).length,
     endpoints: {
       health: '/api/health',
       chat: '/api/chat (POST)',
@@ -466,11 +762,11 @@ app.get('/api/test', async (req, res) => {
 });
 
 // ==============================================
-// CHAT ENDPOINT
+// CHAT ENDPOINT WITH OPTIONS SUPPORT
 // ==============================================
 app.post('/api/chat', async (req, res) => {
   try {
-    const { message } = req.body;
+    const { message, lastTopic, lastOptionLevel } = req.body;
 
     if (!message) {
       return res.status(400).json({ 
@@ -480,6 +776,7 @@ app.post('/api/chat', async (req, res) => {
     }
 
     console.log(`📩 User: ${message}`);
+    if (lastTopic) console.log(`📌 Context: ${lastTopic} (Level: ${lastOptionLevel || 'main'})`);
 
     const GREETINGS = [
       "Hello! 👋 Welcome to Vantage Hall Girls' Residential School. How can I help you today?",
@@ -501,15 +798,30 @@ app.post('/api/chat', async (req, res) => {
       });
     }
 
-    // Try knowledge base first
-    const knowledgeAnswer = findBestMatch(message);
+    // Try knowledge base first (with option support)
+    const knowledgeMatch = findBestMatch(message, lastTopic, lastOptionLevel);
     
-    if (knowledgeAnswer) {
+    if (knowledgeMatch) {
       console.log(`✅ Knowledge Base Match Found`);
+      
+      let reply = knowledgeMatch.answer;
+      
+      // If this response has options, format them
+      if (knowledgeMatch.hasOptions && knowledgeMatch.options) {
+        reply += "\n\n";
+        knowledgeMatch.options.forEach(opt => {
+          reply += `${opt.label}\n`;
+        });
+      }
+      
       return res.json({ 
         success: true, 
-        reply: knowledgeAnswer + "\n\n📚 *From Knowledge Base*",
-        mode: 'knowledge-base'
+        reply: reply,
+        mode: 'knowledge-base',
+        hasOptions: knowledgeMatch.hasOptions,
+        options: knowledgeMatch.options || null,
+        currentTopic: knowledgeMatch.topic,
+        optionLevel: knowledgeMatch.optionLevel || 'main'
       });
     }
 
@@ -567,6 +879,4 @@ app.listen(PORT, () => {
   console.log(`📧 Email: ${EMAIL_CONFIG.auth.user ? 'Configured ✅' : 'Not Configured ❌'}`);
   console.log('╚═══════════════════════════════════════════\n');
   console.log('🚀 Ready to chat! Open index.html in your browser.\n');
-
 });
-
