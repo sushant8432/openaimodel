@@ -735,7 +735,7 @@
         <div class="registration-overlay" id="registrationOverlay">
             <div class="registration-header">
                 <h2>✨ Welcome to Vantage Hall!</h2>
-                <p>Please verify that you are not a robot to continue</p>
+                <p>Please share your details to start chatting</p>
             </div>
             <div class="registration-form">
                 <form id="userDetailsForm">
@@ -758,7 +758,7 @@
                     </div>
 
                     <button type="submit" class="submit-btn" id="submitBtn">
-                       Verify to continue 
+                        Start Chatting 🚀
                     </button>
 
                     <div class="form-note">
@@ -817,7 +817,7 @@
         // ==============================================
         // CONFIGURATION
         // ==============================================
-        const API_URL = "https://openaimodel.vercel.app/api/chat";
+          const API_URL = "https://openaimodel.vercel.app/api/chat";
         const REGISTER_URL = "https://openaimodel.vercel.app/api/register";
 
         // ==============================================
@@ -846,6 +846,8 @@
         let isProcessing = false;
         let isRegistered = false;
         let userData = {};
+        let currentTopic = null;
+        let currentOptionLevel = null;
 
         // Check if user is already registered
         if (localStorage.getItem('vhUserRegistered')) {
@@ -992,7 +994,7 @@
         });
 
         // ==============================================
-        // SEND MESSAGE FUNCTION
+        // SEND MESSAGE FUNCTION WITH OPTIONS SUPPORT
         // ==============================================
         async function sendMessage() {
             const message = userInput.value.trim();
@@ -1010,13 +1012,17 @@
             scrollToBottom();
 
             try {
-                // Call AI API
+                // Call AI API with context
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ message })
+                    body: JSON.stringify({ 
+                        message,
+                        lastTopic: currentTopic,
+                        lastOptionLevel: currentOptionLevel
+                    })
                 });
 
                 if (!response.ok) {
@@ -1030,6 +1036,22 @@
                 
                 if (data.success && data.reply) {
                     addMessage(data.reply, 'bot');
+                    
+                    // Update context for option-based flow
+                    if (data.hasOptions) {
+                        currentTopic = data.currentTopic;
+                        currentOptionLevel = data.optionLevel;
+                        
+                        // Show quick reply buttons for options
+                        if (data.options && data.options.length > 0) {
+                            showOptionButtons(data.options);
+                        }
+                    } else {
+                        // Reset context if no more options
+                        currentTopic = null;
+                        currentOptionLevel = null;
+                        hideOptionButtons();
+                    }
                 } else {
                     throw new Error(data.error || 'Invalid response from server');
                 }
@@ -1051,6 +1073,39 @@
                 sendBtn.disabled = false;
                 userInput.focus();
             }
+        }
+
+        // ==============================================
+        // SHOW OPTION BUTTONS
+        // ==============================================
+        function showOptionButtons(options) {
+            quickReplies.innerHTML = '';
+            quickReplies.style.display = 'flex';
+            
+            options.forEach(option => {
+                const btn = document.createElement('button');
+                btn.className = 'quick-reply-btn';
+                btn.textContent = option.label;
+                btn.onclick = () => {
+                    userInput.value = option.trigger[0];
+                    sendMessage();
+                };
+                quickReplies.appendChild(btn);
+            });
+        }
+
+        // ==============================================
+        // HIDE OPTION BUTTONS
+        // ==============================================
+        function hideOptionButtons() {
+            quickReplies.innerHTML = `
+                <button class="quick-reply-btn" data-reply="What is the admission process?">📝 Admissions</button>
+                <button class="quick-reply-btn" data-reply="Tell me about fee structure">💰 Fee Structure</button>
+                <button class="quick-reply-btn" data-reply="What are hostel facilities?">🏡 Hostel</button>
+                <button class="quick-reply-btn" data-reply="How can I contact you?">📞 Contact</button>
+                <button class="quick-reply-btn" data-reply="What sports are available?">⚽ Sports</button>
+                <button class="quick-reply-btn" data-reply="Tell me about curriculum">📚 Curriculum</button>
+            `;
         }
 
         // ==============================================
@@ -1113,8 +1168,10 @@
         quickReplies.addEventListener('click', (e) => {
             if (e.target.classList.contains('quick-reply-btn')) {
                 const reply = e.target.getAttribute('data-reply');
-                userInput.value = reply;
-                sendMessage();
+                if (reply) {
+                    userInput.value = reply;
+                    sendMessage();
+                }
             }
         });
 
@@ -1138,5 +1195,12 @@
 
 </body>
 </html>
+
+
+
+
+
+
+
 
 
