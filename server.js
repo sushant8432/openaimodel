@@ -1,4 +1,4 @@
-
+// server.js - COMPLETE ENHANCED VERSION WITH FAQ BUTTON
 
 const fetch = require('node-fetch');
 const express = require('express');
@@ -18,28 +18,155 @@ app.use(express.json());
 // ==============================================
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
-// Email Configuration (Gmail)
+// Email Configuration
 const EMAIL_CONFIG = {
   service: 'gmail',
   auth: {
-    user: process.env.ADMIN_EMAIL, // Your Gmail
-    pass: process.env.EMAIL_PASSWORD // Gmail App Password
+    user: process.env.ADMIN_EMAIL,
+    pass: process.env.EMAIL_PASSWORD
   }
 };
 
-// Admin email to receive notifications
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'your-admin@vantagehall.org';
-
-// Create email transporter
 const transporter = nodemailer.createTransport(EMAIL_CONFIG);
 
 // ==============================================
-// COMPREHENSIVE KNOWLEDGE BASE
+// COMPREHENSIVE KNOWLEDGE BASE WITH FAQ
 // ==============================================
 const KNOWLEDGE_BASE = {
-  // ==========================================
+  // ==============================================
+  // FAQ MAIN MENU (NEW SECTION)
+  // ==============================================
+  faq_menu: {
+    keywords: ['faq', 'faqs', 'frequently asked', 'common questions', 'questions'],
+    answer: "🟢 FAQ - IT & Gadgets Policies:\n\nChoose a topic:",
+    hasOptions: true,
+    isFAQMenu: true,
+    options: [
+      {
+        id: 1,
+        label: "1️⃣ Internet Use & Safety",
+        trigger: ['1', 'internet', 'internet safety', 'online safety'],
+        response: "🛡️ Internet Use & Safety:\n\nWhat would you like to know?",
+        subOptions: [
+          {
+            id: 1,
+            label: "🔒 How is browsing monitored?",
+            trigger: ['1', 'monitoring', 'monitored', 'supervised'],
+            response: "👀 Monitoring:\n\nAll online activity is supervised to ensure student safety. There's no expectation of privacy on school devices or Wi-Fi because safety comes first.\n\n✅ All browsing is logged\n✅ Supervised sessions only\n✅ Regular monitoring by staff\n\nAnything else you'd like to know?"
+          },
+          {
+            id: 2,
+            label: "🌐 What sites are restricted?",
+            trigger: ['2', 'restricted', 'blocked sites', 'banned'],
+            response: "🚫 Restricted Websites:\n\nHarmful or inappropriate websites are automatically blocked. Students cannot access unsafe or unsuitable content.\n\n✅ Content filtering active\n✅ Safe browsing environment\n✅ Educational sites prioritized\n\nWant to know about downloading rules?"
+          },
+          {
+            id: 3,
+            label: "📥 Downloading rules",
+            trigger: ['3', 'download', 'downloading', 'install'],
+            response: "📥 Downloading Policy:\n\nStudents cannot download any non-approved apps or software. This helps protect devices and ensures learning stays the focus.\n\n❌ No games or entertainment apps\n❌ No unknown software\n❌ No unauthorized downloads\n\nOnly approved educational software is permitted!"
+          }
+        ]
+      },
+      {
+        id: 2,
+        label: "2️⃣ Downloading & Apps",
+        trigger: ['2', 'download', 'apps', 'install', 'software'],
+        response: "📥 Downloading & Apps Policy:\n\nWhat would you like to know?",
+        subOptions: [
+          {
+            id: 1,
+            label: "✅ Can students download apps?",
+            trigger: ['1', 'can download', 'allowed', 'permitted'],
+            response: "🚫 Download Policy:\n\nStudents cannot download any non-approved apps or software. This helps protect devices and ensures learning stays focused.\n\n✅ Only pre-approved apps\n✅ IT team manages installations\n✅ Educational apps prioritized"
+          },
+          {
+            id: 2,
+            label: "❌ What is not allowed?",
+            trigger: ['2', 'not allowed', 'prohibited', 'banned'],
+            response: "⛔ Prohibited Downloads:\n\nAnything unsafe, unnecessary, or unrelated to academics isn't allowed:\n\n❌ Games\n❌ Movies/Entertainment\n❌ Social media apps\n❌ Unknown software\n❌ Streaming apps\n\nThis policy protects both students and school devices!"
+          }
+        ]
+      },
+      {
+        id: 3,
+        label: "3️⃣ Gadgets (Phones/Laptops)",
+        trigger: ['3', 'gadget', 'phone', 'laptop', 'device'],
+        response: "📱 Gadgets Policy:\n\nWhat would you like to know?",
+        subOptions: [
+          {
+            id: 1,
+            label: "📱 Mobile Phones",
+            trigger: ['1', 'mobile', 'phone', 'smartphone'],
+            response: "📱 Mobile Phone Policy:\n\nStudents can bring phones, but they must be submitted to the staff and are only given back during:\n\n✅ Travel/Holidays\n✅ Approved events\n✅ Sunday video calls with parents\n\nThis ensures students stay focused on academics and campus activities!"
+          },
+          {
+            id: 2,
+            label: "💻 Laptops/Tablets",
+            trigger: ['2', 'laptop', 'tablet', 'computer'],
+            response: "💻 Laptop/Tablet Policy:\n\nYes, students may bring learning devices, but they are issued only for:\n\n✅ Academic work\n✅ Research projects\n✅ Exam preparation\n✅ With permission from staff\n\nDevices must be used responsibly for educational purposes only!"
+          },
+          {
+            id: 3,
+            label: "🎧 Gadgets Not Allowed",
+            trigger: ['3', 'not allowed', 'prohibited', 'banned gadgets'],
+            response: "⛔ Prohibited Gadgets:\n\nSome gadgets are not permitted:\n\n❌ Speakers\n❌ Smartwatches\n❌ Wireless headphones\n❌ Gaming devices\n\nIf brought, they're taken into safe custody and returned to parents at term-end only."
+          }
+        ]
+      },
+      {
+        id: 4,
+        label: "4️⃣ Device Storage & Access",
+        trigger: ['4', 'storage', 'access', 'when use', 'kept where'],
+        response: "🗄️ Device Storage & Access:\n\nWhat would you like to know?",
+        subOptions: [
+          {
+            id: 1,
+            label: "📍 Where are devices kept?",
+            trigger: ['1', 'where', 'kept', 'stored'],
+            response: "🗄️ Device Storage:\n\nDevices are stored safely with:\n\n✅ House staff\n✅ Admin team\n✅ Secure storage areas\n\nStudents are responsible for maintaining their devices in good condition!"
+          },
+          {
+            id: 2,
+            label: "📝 How to get device issued?",
+            trigger: ['2', 'get device', 'issue', 'request'],
+            response: "📝 Device Issue Process:\n\nDevices are issued only:\n\n✅ For study purposes\n✅ With staff permission\n✅ During approved times\n✅ With advance request\n\nProper authorization ensures responsible usage!"
+          },
+          {
+            id: 3,
+            label: "⏰ When can devices be used?",
+            trigger: ['3', 'when', 'timing', 'usage time'],
+            response: "⏰ Device Usage Timing:\n\nDevices are used during:\n\n✅ Approved study hours\n✅ Research time\n✅ School activities\n\n❌ Not during:\n• Free time\n• Dorm hours\n• Without supervision\n\nThis maintains a healthy balance between study and rest!"
+          }
+        ]
+      },
+      {
+        id: 5,
+        label: "5️⃣ Rules & Consequences",
+        trigger: ['5', 'rules', 'consequences', 'punishment', 'misuse'],
+        response: "⚖️ Rules & Consequences:\n\nWhat would you like to know?",
+        subOptions: [
+          {
+            id: 1,
+            label: "⚠️ What counts as misuse?",
+            trigger: ['1', 'misuse', 'what counts', 'violation'],
+            response: "⚠️ Misuse Includes:\n\n❌ Accessing unsafe sites\n❌ Using gadgets without permission\n❌ Downloading unapproved material\n❌ Misusing someone else's device\n❌ Breaking safety protocols\n\nFollowing these rules keeps everyone safe!"
+          },
+          {
+            id: 2,
+            label: "🚨 What are the consequences?",
+            trigger: ['2', 'consequences', 'punishment', 'what happens'],
+            response: "🚨 Consequences of Rule Violation:\n\nMisuse can lead to:\n\n⚠️ Withdrawal of gadget access\n⚠️ Withdrawal of Internet access\n⚠️ Formal warnings\n⚠️ Further disciplinary action if needed\n\nWe believe in fair consequences that help students learn and maintain a safe environment!"
+          }
+        ]
+      }
+    ]
+  },
+
+  // ==============================================
   // EMOTIONAL SUPPORT & WELLBEING
-  // ==========================================
+  // ==============================================
   
   visiting_policy: {
     keywords: ['visit', 'visiting', 'can i visit', 'parent visit', 'meet daughter', 'see my daughter', 'visiting hours', 'when can i visit', 'visiting time'],
@@ -76,10 +203,10 @@ const KNOWLEDGE_BASE = {
     answer: "📱 Parent-Student Communication:\n\n📞 Regular Calls:\n• Every Sunday: 1 hour device access for video/phone calls\n\n🚨 Emergency Communication:\n• Pastoral team ensures immediate contact\n• Front desk available 24/7\n• Parents informed instantly in emergencies\n\nWe ensure you stay connected with your daughter while maintaining a healthy balance with campus life."
   },
 
- medical_facilities: {
-  keywords: ['medical facility', 'doctor on campus', 'nurse', 'infirmary', 'sick', 'illness', 'health care', 'medical emergency', 'hospital'],
-  answer: "🏥 Medical Facilities:<br><br>✅ Fully equipped infirmary on campus with 24/7 medical assistance<br>👩‍⚕️ Qualified female doctor and trained nurses available<br>🚑 School ambulance for immediate evacuation<br>🏥 Tie-ups with nearby hospitals like Graphic Era, Synergy, and Max for emergencies<br>📞 Parents informed immediately in case of any medical situation<br><br>Your daughter’s health and safety are always a top priority. For complete details, visit: <a href='https://vantagehall.org/medical-services/' target='_blank'>Medical Services</a>"
-},
+  medical_facilities: {
+    keywords: ['medical facility', 'doctor on campus', 'nurse', 'infirmary', 'sick', 'illness', 'health care', 'medical emergency', 'hospital'],
+    answer: "🏥 Medical Facilities:<br><br>✅ Fully equipped infirmary on campus with 24/7 medical assistance<br>👩‍⚕️ Qualified female doctor and trained nurses available<br>🚑 School ambulance for immediate evacuation<br>🏥 Tie-ups with nearby hospitals like Graphic Era, Synergy, and Max for emergencies<br>📞 Parents informed immediately in case of any medical situation<br><br>Your daughter's health and safety are always a top priority. For complete details, visit: <a href='https://vantagehall.org/medical-services/' target='_blank'>Medical Services</a>"
+  },
 
   staff_training: {
     keywords: ['staff trained', 'teacher training', 'pastoral care training', 'staff qualification', 'how staff trained', 'mentors', 'staff care'],
@@ -137,309 +264,125 @@ const KNOWLEDGE_BASE = {
     answer: "⏱️ 24x7 Medical Availability:\n\nMedical assistance, including first and primary aid, is available at all hours — ensuring your child's safety day and night."
   },
 
-  // Founder & History
   founder: {
     keywords: ['founder', 'established', 'history', 'who started', 'foundation', 'when founded'],
     answer: "🏫 Vantage Hall Girls' Residential School was established in 2013 with a vision to provide world-class boarding education for girls in a nurturing and empowering environment."
   },
 
-  // Affiliation
   affiliation: {
     keywords: ['affiliation', 'cbse code', 'board affiliation', 'school code'],
     answer: "📘 The school is affiliated to the Central Board of Secondary Education (CBSE), New Delhi."
   },
 
-  // Location
   location: {
     keywords: ['location', 'map', 'how to reach', 'directions', 'bus stop', 'address'],
     answer: "📍 Vantage Hall is located in Doonga, Dehradun — about 10 km from the city centre. Easily accessible via Sahaspur Road & Rajpur Road.\n🗺 Google Maps: https://maps.app.goo.gl/F9okR4GADbhN9x5G8"
   },
 
-  // Faculty
   faculty: {
     keywords: ['faculty', 'teachers', 'staff', 'teaching quality', 'teacher qualification'],
     answer: `🏫 All faculty members are highly qualified professionals with CBSE teaching certifications. Many hold postgraduate degrees and have years of teaching and mentoring experience.\n🔗 Learn more: <a href='https://vantagehall.org/teachers-bio/' target='_blank'>vantagehall.org/teachers-bio</a>`
   },
   
-  // Smart Classes
   smart_class: {
     keywords: ['smart class', 'technology', 'digital classroom', 'computer lab', 'ERP', 'online learning'],
     answer: "💻 Digital & Smart Learning:\n• Smart classrooms with interactive panels\n• Computer & Robotics Labs\n• Wi-Fi-enabled learning environment\n• Integrated Edunext ERP for attendance, grades & communication"
   },
 
-  // Safety & Security
   safety: {
     keywords: ['safety', 'security', 'cctv', 'warden', 'camera', 'rules'],
     answer: "🛡 Safety & Security:\n• 24x7 wardens in each hostel block\n• CCTV surveillance in corridors & common areas\n• Controlled visitor access with ID verification\n• Strict discipline & conduct policy"
   },
 
-  // Campus
   campus: {
     keywords: ['campus', 'infrastructure', 'library', 'labs', 'facilities available', 'auditorium'],
     answer: "🏫 Campus Facilities:\n• 12-acre lush green campus\n• Modern academic blocks & labs\n• Fully stocked library\n• Amphitheatre & multi-purpose auditorium\n• Indoor & outdoor sports arenas"
   },
 
-  // Vision & Mission
   vision: {
     keywords: ['vision', 'goal', 'objective', 'purpose', 'mission'],
     answer: "🎯 Our Vision & Mission:\n\nTo nurture happy, independent, and unique individuals in a safe and supportive environment."
   },
 
- // Curriculum
-curriculum: {
-  keywords: ['curriculum', 'board', 'cbse', 'syllabus', 'academics system', 'what subject', 'subjects taught'],
-  answer: "📚 We follow the CBSE curriculum with a well-balanced, student-centric academic programme that encourages holistic learning and critical thinking.<br><br>🎓 Streams Offered (Classes 11-12):<br>• Science<br>• Commerce<br>• Humanities<br><br>Our curriculum emphasizes holistic development beyond textbooks, including hands-on activities, critical thinking, and creative expression. For full information, visit: <a href='https://vantagehall.org/curriculum/' target='_blank'>Curriculum</a>"
-},
+  curriculum: {
+    keywords: ['curriculum', 'board', 'cbse', 'syllabus', 'academics system', 'what subject', 'subjects taught'],
+    answer: "📚 We follow the CBSE curriculum with a well-balanced, student-centric academic programme that encourages holistic learning and critical thinking.<br><br>🎓 Streams Offered (Classes 11-12):<br>• Science<br>• Commerce<br>• Humanities<br><br>Our curriculum emphasizes holistic development beyond textbooks, including hands-on activities, critical thinking, and creative expression. For full information, visit: <a href='https://vantagehall.org/curriculum/' target='_blank'>Curriculum</a>"
+  },
 
-  // Timings
   timings: {
     keywords: ['timing', 'time', 'hour', 'schedule', 'start'],
     answer: "🕐 School Timings:\n\n• Grades 3-9: 7:45 AM - 12:55 PM\n• Grades 10-12: 7:45 AM - 1:35 PM\n• Activity Classes: 2:45 PM - 4:05 PM"
   },
 
-  // Student-Teacher Ratio
   ratio: {
     keywords: ['ratio', 'student', 'teacher', 'class size', 'students per'],
     answer: "👩‍🏫 Student-Teacher Ratio: 1:5\n\nWe maintain small class sizes to ensure personalized attention and effective learning for every student."
   },
 
-  // Eligibility
   eligibility: {
     keywords: ['eligibility', 'eligible', 'criteria', 'qualify', 'who can', 'age'],
     answer: "📝 Eligibility Criteria:\n\n✅ Classes: 3-12\n✅ Age: As per CBSE guidelines\n✅ Eligibility: Successful completion of previous grade\n✅ Required: Transfer Certificate and Report Card\n⚠️ Note: Admission to Class 10 is considered only in exceptional cases"
   },
 
-  // Admission Process
-admission: {
-  keywords: ['admission', 'admit', 'process of admission', 'enroll', 'join', 'apply'],
-  answer: "📝 Admission Process:<br><br>✅ Step 1: Written Test (English, Mathematics, Science)<br>✅ Step 2: Interaction with Principal<br>✅ Step 3: Interaction with Director<br><br>📅 Registrations: September-October<br>📅 Session Starts: April<br><br>📞 Contact:<br>+91-8191912999, +91-7078311863<br>📧 admissions@vantagehall.org<br>🔗 <a href='https://vantagehall.org/admission-procedure/' target='_blank'>Admission Procedure</a> for complete details"
-},
+  admission: {
+    keywords: ['admission', 'admit', 'process of admission', 'enroll', 'join', 'apply'],
+    answer: "📝 Admission Process:<br><br>✅ Step 1: Written Test (English, Mathematics, Science)<br>✅ Step 2: Interaction with Principal<br>✅ Step 3: Interaction with Director<br><br>📅 Registrations: September-October<br>📅 Session Starts: April<br><br>📞 Contact:<br>+91-8191912999, +91-7078311863<br>📧 admissions@vantagehall.org<br>🔗 <a href='https://vantagehall.org/admission-procedure/' target='_blank'>Admission Procedure</a> for complete details"
+  },
 
-
-  // Documents Required
   documents: {
     keywords: ['document', 'paper', 'certificate', 'required', 'need', 'bring'],
     answer: "📄 Required Documents:\n\n• Birth Certificate & Aadhaar Card\n• Parents' Aadhaar & PAN Cards\n• Last examination mark sheet\n• Original Transfer Certificate\n• Medical Fitness Certificate\n• Student's PEN Number / APAAR ID"
   },
 
- // Fee Structure
-fee: {
-  keywords: ['fee', 'fees', 'cost', 'tuition', 'charge', 'payment', 'price'],
-  answer: "💰 Fee Structure:<br><br>📌 Classes 3-7: ₹7,35,000 (Annual: ₹5,50,000 + One-time: ₹1,85,000)<br><br>📌 Classes 8-10: ₹8,35,000 (Annual: ₹6,50,000 + One-time: ₹1,85,000)<br><br>📌 Classes 11-12: ₹8,85,000 (Annual: ₹7,00,000 + One-time: ₹1,85,000)<br><br>*One-time fees include registration, joining kit, imprest deposit & admission fee.<br><br>For full details, visit: <a href='https://vantagehall.org/fee-structure/' target='_blank'>Fee Structure</a>"
-},
+  fee: {
+    keywords: ['fee', 'fees', 'cost', 'tuition', 'charge', 'payment', 'price'],
+    answer: "💰 Fee Structure:<br><br>📌 Classes 3-7: ₹7,35,000 (Annual: ₹5,50,000 + One-time: ₹1,85,000)<br><br>📌 Classes 8-10: ₹8,35,000 (Annual: ₹6,50,000 + One-time: ₹1,85,000)<br><br>📌 Classes 11-12: ₹8,85,000 (Annual: ₹7,00,000 + One-time: ₹1,85,000)<br><br>*One-time fees include registration, joining kit, imprest deposit & admission fee.<br><br>For full details, visit: <a href='https://vantagehall.org/fee-structure/' target='_blank'>Fee Structure</a>"
+  },
 
-
-  // Hostel Facilities
   hostel: {
     keywords: ['hostel', 'hostel facilities', 'boarding', 'residential', 'accommodation', 'room'],
     answer: "🏡 Hostel Facilities:\n\n✨ Well-furnished dormitories with beds, storage, study tables & wardrobes\n✨ Separate hostels for juniors & seniors\n✨ Regular laundry service\n✨ Daily housekeeping\n✨ 24/7 supervision by wardens\n✨ Safe & supportive environment"
   },
 
-  // Food & Dining
   food: {
     keywords: ['food', 'dining', 'menu', 'meal', 'lunch', 'dinner', 'breakfast', 'diet'],
     answer: "🍽️ Dining & Nutrition:\n\n✅ Nutritionist-planned meals\n✅ Special diets for athletes & medical needs\n✅ Veg & non-veg options\n✅ Menu rotates every 15 days\n\n🥗 Daily Meals:\n• Breakfast: Fruits, cereals, milk, eggs, bread/parathas\n• Lunch: Dal, rice/roti, vegetables, salad\n• Dinner: Similar to lunch with variety\n• Night Milk: Mandatory"
   },
 
-// Sports
-sports: {
-  keywords: ['sports', 'sport available', 'games', 'what sports', 'sports facilities', 'athletics', 'physical education', 'football', 'cricket', 'basketball', 'swimming', 'which sports'],
-  answer: "⚽ Sports & Athletics:<br><br>Training under qualified coaches in:<br><br>🏃‍♀️ Football, Self Defense, Basketball,<br>🎾 Squash, Badminton, Zumba Classes, Table Tennis<br>⛸️ Skating, Gymnasium, Swimming<br>♟️ Indoor Games: Chess<br><br>For full details, visit: <a href='https://vantagehall.org/sports-facilities/' target='_blank'>Sports Facilities</a>"
-},
+  sports: {
+    keywords: ['sports', 'sport available', 'games', 'what sports', 'sports facilities', 'athletics', 'physical education', 'football', 'cricket', 'basketball', 'swimming', 'which sports'],
+    answer: "⚽ Sports & Athletics:<br><br>Training under qualified coaches in:<br><br>🏃‍♀️ Football, Self Defense, Basketball,<br>🎾 Squash, Badminton, Zumba Classes, Table Tennis<br>⛸️ Skating, Gymnasium, Swimming<br>♟️ Indoor Games: Chess<br><br>For full details, visit: <a href='https://vantagehall.org/sports-facilities/' target='_blank'>Sports Facilities</a>"
+  },
 
+  clubs: {
+    keywords: ['club', 'activity', 'extracurricular', 'societies', 'hobby'],
+    answer: "🎨 Clubs & Societies:<br><br>• Art Club<br>• Culinary Club<br>• Dance & Music Club<br>• Theatre Club<br>• Finance & Maths Club<br>• IT Club<br>• Science Club<br>• Photography Club<br>• Sustainability Club<br>• Editorial Board<br><br>Explore more activities at: <a href='https://vantagehall.org/clubs/' target='_blank'>Clubs & Activities</a>"
+  },
 
-  // Clubs & Activities
-clubs: {
-  keywords: ['club', 'activity', 'extracurricular', 'societies', 'hobby'],
-  answer: "🎨 Clubs & Societies:<br><br>• Art Club<br>• Culinary Club<br>• Dance & Music Club<br>• Theatre Club<br>• Finance & Maths Club<br>• IT Club<br>• Science Club<br>• Photography Club<br>• Sustainability Club<br>• Editorial Board<br><br>Explore more activities at: <a href='https://vantagehall.org/clubs/' target='_blank'>Clubs & Activities</a>"
-},
-
-
-  // Career Guidance
   career: {
     keywords: ['career', 'guidance', 'college', 'university', 'neet', 'jee', 'clat'],
     answer: "🎯 Career Guidance:\n\nWe offer counseling for Grades 8-12, including:\n\n✅ Medical (NEET)\n✅ Engineering (JEE)\n✅ Law (CLAT, AILET)\n✅ Management (IPM, NMIMS)\n✅ Design (NIFT, UCEED)\n✅ SAT & AP (foreign universities)\n\n1-on-1 guidance sessions available!"
   },
 
-  // Contact Information
   contact: {
     keywords: ['contact', 'phone', 'email', 'address', 'reach', 'call', 'number'],
     answer: "📍 Vantage Hall Girls' Residential School\nThe Yellow Brick Road, Doonga\nDehradun - 248007, Uttarakhand\n📞 General: <a href='tel:01352776225'>0135-2776225</a>, <a href='tel:01352776226'>226</a>, <a href='tel:01352776227'>227</a>, <a href='tel:01352776228'>228</a>\n📧 <a href='mailto:info@vantagehall.org'>info@vantagehall.org</a>\n\n👤 Admissions:\n📞 <a href='tel:+918191912999'>+91-8191912999</a>, <a href='tel:+917078311863'>+91-7078311863</a>\n📧 <a href='mailto:admissions@vantagehall.org'>admissions@vantagehall.org</a>\n🔗 Contact page: <a href='https://vantagehall.org/contact-us' target='_blank'>vantagehall.org/contact-us</a>"
-  },
-
-  // ==========================================
-  // IT & GADGETS POLICY SECTION (with Interactive Options)
-  // ==========================================
-
-  // 1. Internet Use & Safety - Main Entry
-  internet_use_safety: {
-    keywords: ['internet', 'online', 'internet safety', 'online safety', 'web safety', 'internet use', 'browsing'],
-    answer: "Hi! Would you like to know how we keep students safe online?\n\nPlease choose an option:",
-    hasOptions: true,
-    options: [
-      {
-        id: 1,
-        label: "🛡️ Internet Safety",
-        trigger: ['1', 'internet safety', 'safety', 'safe online'],
-        response: "All online sessions at school are supervised. Students use the Internet only for learning, research, and projects.\n\nWould you like to know about monitoring or safe browsing?",
-        subOptions: [
-          {
-            id: 1,
-            label: "👀 How is browsing monitored?",
-            trigger: ['1', 'monitoring', 'monitored', 'track'],
-            response: "We keep an eye on all online activity to make sure students stay safe. There's no expectation of privacy on school devices or Wi-Fi because safety comes first.\n\nAnything else you'd like to ask?"
-          },
-          {
-            id: 2,
-            label: "🌐 What sites are restricted?",
-            trigger: ['2', 'restricted', 'blocked', 'banned sites'],
-            response: "Don't worry, harmful or inappropriate websites are automatically blocked. Students cannot access unsafe or unsuitable content.\n\nWant to know about downloading rules?",
-            subOptions: [
-              {
-                id: 1,
-                label: "📥 Downloading rules",
-                trigger: ['1', 'download', 'downloading rules'],
-                response: "Students can't download any non-approved apps or software. This helps protect devices and ensures learning stays the focus.\n\nAnything unsafe, unnecessary, or unrelated to academics isn't allowed - including games, movies, or unknown software."
-              },
-              {
-                id: 2,
-                label: "❌ Prohibited actions",
-                trigger: ['2', 'prohibited', 'not allowed'],
-                response: "Prohibited actions include:\n• Downloading games or entertainment apps\n• Installing unknown software\n• Accessing blocked websites\n• Sharing login credentials\n\nThese rules help maintain a safe learning environment!"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        id: 2,
-        label: "👀 Monitoring",
-        trigger: ['2', 'monitoring', 'track', 'supervise'],
-        response: "We keep an eye on all online activity to make sure students stay safe. There's no expectation of privacy on school devices or Wi-Fi because safety comes first.\n\nAll browsing is supervised and logged for student protection."
-      },
-      {
-        id: 3,
-        label: "🚫 Restricted Websites",
-        trigger: ['3', 'restricted', 'blocked websites', 'banned'],
-        response: "Don't worry, harmful or inappropriate websites are automatically blocked. Students cannot access unsafe or unsuitable content.\n\nContent filtering ensures a safe browsing environment!"
-      }
-    ]
-  },
-
-  // 2. Downloading & Permissions
-  downloading_permissions: {
-    keywords: ['download', 'install', 'app', 'software', 'permission', 'installing apps'],
-    answer: "Looking for information about installing apps or software?\n\nPlease choose an option:",
-    hasOptions: true,
-    options: [
-      {
-        id: 1,
-        label: "📥 Can students download apps?",
-        trigger: ['1', 'can download', 'download apps', 'install apps'],
-        response: "Students can't download any non-approved apps or software. This helps protect devices and ensures learning stays the focus."
-      },
-      {
-        id: 2,
-        label: "🛑 What is not allowed?",
-        trigger: ['2', 'not allowed', 'prohibited', 'banned'],
-        response: "Anything unsafe, unnecessary, or unrelated to academics isn't allowed - including games, movies, or unknown software.\n\nThis policy protects both students and school devices!"
-      }
-    ]
-  },
-
-  // 3. Gadget Use & Permissions
-  gadget_use: {
-    keywords: ['gadget', 'device', 'bring gadget', 'what gadgets', 'allowed gadgets', 'phone', 'laptop', 'tablet'],
-    answer: "Would you like to know what gadgets students can bring?\n\nPlease choose an option:",
-    hasOptions: true,
-    options: [
-      {
-        id: 1,
-        label: "📱 Mobile Phones",
-        trigger: ['1', 'mobile', 'phone', 'smartphone', 'cell phone'],
-        response: "Students can bring phones, but they must be submitted to the staff and are only given back during travel or approved events.\n\nThis ensures students stay focused on academics and campus activities!"
-      },
-      {
-        id: 2,
-        label: "💻 Laptops/Tablets",
-        trigger: ['2', 'laptop', 'tablet', 'computer', 'ipad'],
-        response: "Yes, students may bring learning devices, but they are issued only for academic work, research, and exam preparation and always with permission.\n\nDevices must be used responsibly for educational purposes only!"
-      },
-      {
-        id: 3,
-        label: "🎧 Gadgets Not Allowed",
-        trigger: ['3', 'not allowed', 'prohibited', 'banned gadgets'],
-        response: "Some gadgets like speakers, smartwatches, or wireless headphones are not permitted. If brought, they're taken into safe custody and not returned during the term.\n\nThey will be returned to parents at term-end only."
-      }
-    ]
-  },
-
-  // 4. Device Storage & Access
-  device_storage_access: {
-    keywords: ['device storage', 'where kept', 'device access', 'get device', 'when use device', 'device timing'],
-    answer: "Want to know how devices are stored or accessed?\n\nPlease choose an option:",
-    hasOptions: true,
-    options: [
-      {
-        id: 1,
-        label: "🗄️ Where are devices kept?",
-        trigger: ['1', 'where kept', 'storage', 'kept where'],
-        response: "Devices are stored safely with the house staff or admin team. Students are responsible for keeping their own devices in good condition.\n\nAll devices are kept in secure storage areas!"
-      },
-      {
-        id: 2,
-        label: "📝 How to get a device issued?",
-        trigger: ['2', 'get device', 'issue device', 'request device'],
-        response: "Devices are issued only for study purposes and only with proper permission from authorized staff. Students should request approvals in advance.\n\nProper authorization ensures responsible usage!"
-      },
-      {
-        id: 3,
-        label: "⏳ When can devices be used?",
-        trigger: ['3', 'when use', 'device timing', 'usage time'],
-        response: "Devices are used during approved times for academic work, research, or school activities. Not during free time, dorm hours, or without supervision.\n\nThis helps maintain a healthy balance between study and rest!"
-      }
-    ]
-  },
-
-  // 5. Misuse & Consequences
-  misuse_consequences: {
-    keywords: ['misuse', 'breaking rules', 'consequences', 'punishment', 'what happens', 'rule violation', 'disciplinary'],
-    answer: "Have questions about rules or consequences?\n\nPlease choose an option:",
-    hasOptions: true,
-    options: [
-      {
-        id: 1,
-        label: "⚠️ What counts as misuse?",
-        trigger: ['1', 'what is misuse', 'counts as misuse', 'misuse means'],
-        response: "Things like accessing unsafe sites, using gadgets without permission, downloading unapproved material, or misusing someone else's device all count as misuse.\n\nFollowing these rules keeps everyone safe!"
-      },
-      {
-        id: 2,
-        label: "🚨 What happens if rules are broken?",
-        trigger: ['2', 'consequences', 'punishment', 'what happens', 'broken rules'],
-        response: "Misuse can lead to withdrawal of gadget or Internet access, warnings, and further disciplinary action if needed. Safety and responsibility are priorities.\n\nWe believe in fair consequences that help students learn!"
-      }
-    ]
   }
 };
 
 // ==============================================
-// SMART KEYWORD MATCHING FUNCTION WITH OPTIONS SUPPORT
+// SMART KEYWORD MATCHING
 // ==============================================
 function findBestMatch(userMessage, lastTopic = null, lastOptionLevel = null) {
   const msg = userMessage.toLowerCase().trim();
   
-  // If we're in an option flow (user previously selected a topic with options)
   if (lastTopic && KNOWLEDGE_BASE[lastTopic]) {
     const topicData = KNOWLEDGE_BASE[lastTopic];
     
-    // Check if user is selecting an option
     if (topicData.hasOptions) {
-      // Check main options
       for (const option of topicData.options) {
         for (const trigger of option.trigger) {
           if (msg === trigger.toLowerCase() || msg.includes(trigger.toLowerCase())) {
-            // Check if this option has sub-options
             if (option.subOptions) {
               return {
                 answer: option.response,
@@ -458,14 +401,12 @@ function findBestMatch(userMessage, lastTopic = null, lastOptionLevel = null) {
         }
       }
       
-      // If we're at sub-option level, check those too
       if (lastOptionLevel === 'sub') {
         for (const mainOption of topicData.options) {
           if (mainOption.subOptions) {
             for (const subOption of mainOption.subOptions) {
               for (const trigger of subOption.trigger) {
                 if (msg === trigger.toLowerCase() || msg.includes(trigger.toLowerCase())) {
-                  // Check if sub-option has further sub-options
                   if (subOption.subOptions) {
                     return {
                       answer: subOption.response,
@@ -489,7 +430,6 @@ function findBestMatch(userMessage, lastTopic = null, lastOptionLevel = null) {
     }
   }
   
-  // Regular keyword matching for initial queries
   let bestMatch = null;
   let highestScore = 0;
   
@@ -522,7 +462,8 @@ function findBestMatch(userMessage, lastTopic = null, lastOptionLevel = null) {
         score: score,
         matchedKeywords: matchedKeywords,
         hasOptions: data.hasOptions || false,
-        options: data.options || null
+        options: data.options || null,
+        isFAQMenu: data.isFAQMenu || false
       };
     }
   }
@@ -536,7 +477,7 @@ function findBestMatch(userMessage, lastTopic = null, lastOptionLevel = null) {
 }
 
 // ==============================================
-// SEND EMAIL NOTIFICATION TO ADMIN
+// EMAIL NOTIFICATION
 // ==============================================
 async function sendAdminEmail(userDetails) {
   try {
@@ -566,30 +507,10 @@ async function sendAdminEmail(userDetails) {
             </div>
             <div class="content">
               <h3>User Details:</h3>
-              
-              <div class="info-row">
-                <span class="label">👤 Name:</span><br>
-                ${userDetails.name}
-              </div>
-              
-              <div class="info-row">
-                <span class="label">📧 Email:</span><br>
-                ${userDetails.email}
-              </div>
-              
-              <div class="info-row">
-                <span class="label">📱 Phone:</span><br>
-                ${userDetails.phone}
-              </div>
-              
-              <div class="info-row">
-                <span class="label">🕐 Time:</span><br>
-                ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
-              </div>
-              
-              <p style="margin-top: 25px; padding: 15px; background: #e8f5e9; border-left: 4px solid #4caf50; border-radius: 4px;">
-                <strong>Action Required:</strong> This user has started a conversation with the chatbot. You may want to follow up via email or phone.
-              </p>
+              <div class="info-row"><span class="label">👤 Name:</span><br>${userDetails.name}</div>
+              <div class="info-row"><span class="label">📧 Email:</span><br>${userDetails.email}</div>
+              <div class="info-row"><span class="label">📱 Phone:</span><br>${userDetails.phone}</div>
+              <div class="info-row"><span class="label">🕐 Time:</span><br>${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</div>
             </div>
             <div class="footer">
               <p>This is an automated notification from Vantage Hall Chatbot System</p>
@@ -624,7 +545,7 @@ async function callOpenAI(prompt) {
         'Authorization': `Bearer ${OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini', // Using GPT-4o-mini (cost-effective)
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',
@@ -662,12 +583,12 @@ async function callOpenAI(prompt) {
 }
 
 // ==============================================
-// ROOT ENDPOINT
+// ENDPOINTS
 // ==============================================
 app.get('/', (req, res) => {
   res.json({
     status: '✅ Server Running',
-    message: 'Vantage Hall Chatbot API - Enhanced Version with IT & Gadgets Policy + Emotional Support',
+    message: 'Vantage Hall Chatbot API - Enhanced with FAQ Button',
     model: 'OpenAI GPT-4o-mini + Email Notifications',
     knowledgeBaseTopics: Object.keys(KNOWLEDGE_BASE).length,
     endpoints: {
@@ -679,21 +600,14 @@ app.get('/', (req, res) => {
   });
 });
 
-// ==============================================
-// HEALTH CHECK
-// ==============================================
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// ==============================================
-// USER REGISTRATION ENDPOINT
-// ==============================================
 app.post('/api/register', async (req, res) => {
   try {
     const { name, email, phone } = req.body;
 
-    // Validation
     if (!name || !email || !phone) {
       return res.status(400).json({
         success: false,
@@ -701,7 +615,6 @@ app.post('/api/register', async (req, res) => {
       });
     }
 
-    // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({
@@ -710,7 +623,6 @@ app.post('/api/register', async (req, res) => {
       });
     }
 
-    // Phone validation (Indian format)
     const phoneRegex = /^[6-9]\d{9}$/;
     if (!phoneRegex.test(phone.replace(/\D/g, '').slice(-10))) {
       return res.status(400).json({
@@ -720,8 +632,6 @@ app.post('/api/register', async (req, res) => {
     }
 
     console.log('📝 New user registration:', { name, email, phone });
-
-    // Send email to admin
     const emailSent = await sendAdminEmail({ name, email, phone });
 
     res.json({
@@ -739,9 +649,6 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-// ==============================================
-// TEST ENDPOINT
-// ==============================================
 app.get('/api/test', async (req, res) => {
   try {
     const reply = await callOpenAI('Say "Hello! The OpenAI API is working!" in one sentence.');
@@ -761,9 +668,6 @@ app.get('/api/test', async (req, res) => {
   }
 });
 
-// ==============================================
-// CHAT ENDPOINT WITH OPTIONS SUPPORT
-// ==============================================
 app.post('/api/chat', async (req, res) => {
   try {
     const { message, lastTopic, lastOptionLevel } = req.body;
@@ -788,7 +692,6 @@ app.post('/api/chat', async (req, res) => {
       "I'd be happy to help! For specific details:\n📞 0135-2776225\n📧 info@vantagehall.org"
     ];
 
-    // Check for greeting
     if (/^(hi|hello|hey|good morning|good afternoon|good evening)/i.test(message.trim())) {
       const greeting = GREETINGS[Math.floor(Math.random() * GREETINGS.length)];
       return res.json({ 
@@ -798,7 +701,6 @@ app.post('/api/chat', async (req, res) => {
       });
     }
 
-    // Try knowledge base first (with option support)
     const knowledgeMatch = findBestMatch(message, lastTopic, lastOptionLevel);
     
     if (knowledgeMatch) {
@@ -806,7 +708,6 @@ app.post('/api/chat', async (req, res) => {
       
       let reply = knowledgeMatch.answer;
       
-      // If this response has options, format them
       if (knowledgeMatch.hasOptions && knowledgeMatch.options) {
         reply += "\n\n";
         knowledgeMatch.options.forEach(opt => {
@@ -821,11 +722,11 @@ app.post('/api/chat', async (req, res) => {
         hasOptions: knowledgeMatch.hasOptions,
         options: knowledgeMatch.options || null,
         currentTopic: knowledgeMatch.topic,
-        optionLevel: knowledgeMatch.optionLevel || 'main'
+        optionLevel: knowledgeMatch.optionLevel || 'main',
+        isFAQMenu: knowledgeMatch.isFAQMenu || false
       });
     }
 
-    // Try OpenAI
     try {
       const systemContext = `
 School Information:
